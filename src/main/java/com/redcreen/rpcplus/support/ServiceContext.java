@@ -53,13 +53,13 @@ import com.redcreen.rpcplus.util.bytecode.ClassGenerator;
  * @see Adaptive
  * @see Autoproxy
  */
-public class ExtensionLoader<T> {
+public class ServiceContext<T> {
     
 	private static final String SERVICES_DIRECTORY = "META-INF/services/";
 
     private static final Pattern NAME_SEPARATOR = Pattern.compile("\\s*[,]+\\s*");
     
-    private static final ConcurrentMap<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
+    private static final ConcurrentMap<Class<?>, ServiceContext<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ServiceContext<?>>();
 
     private final Class<?> type;
     
@@ -77,19 +77,19 @@ public class ExtensionLoader<T> {
     private String cachedDefaultName;
     
     @SuppressWarnings("unchecked")
-    public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
+    public static <T> ServiceContext<T> getExtensionLoader(Class<T> type) {
         if (type == null)
             throw new IllegalArgumentException("Extension type == null");
         
-        ExtensionLoader<T> loader = (ExtensionLoader<T>) EXTENSION_LOADERS.get(type);
+        ServiceContext<T> loader = (ServiceContext<T>) EXTENSION_LOADERS.get(type);
         if (loader == null) {
-            EXTENSION_LOADERS.putIfAbsent(type, new ExtensionLoader<T>(type));
-            loader = (ExtensionLoader<T>) EXTENSION_LOADERS.get(type);
+            EXTENSION_LOADERS.putIfAbsent(type, new ServiceContext<T>(type));
+            loader = (ServiceContext<T>) EXTENSION_LOADERS.get(type);
         }
         return loader;
     }
 
-    private ExtensionLoader(Class<?> type) {
+    private ServiceContext(Class<?> type) {
         this.type = type;
     }
 	
@@ -514,7 +514,7 @@ public class ExtensionLoader<T> {
                 code.append(s);
                 
                 s = String.format("%s extension = (%<s)%s.getExtensionLoader(%s.class).getExtension(extName);",
-                        type.getName(), ExtensionLoader.class.getName(), type.getName());
+                        type.getName(), ServiceContext.class.getName(), type.getName());
                 code.append(s);
                 
                 // return statement
@@ -543,7 +543,7 @@ public class ExtensionLoader<T> {
         if (classLoader != null) {
             return classLoader;
         }
-        classLoader = ExtensionLoader.class.getClassLoader();
+        classLoader = ServiceContext.class.getClassLoader();
         return classLoader;
     }
     
@@ -554,9 +554,9 @@ public class ExtensionLoader<T> {
     
     
     /**
-     * 在{@link ExtensionLoader}生成Extension的Adaptive Instance时，为{@link ExtensionLoader}提供信息。
+     * 在{@link ServiceContext}生成Extension的Adaptive Instance时，为{@link ServiceContext}提供信息。
      * 
-     * @see ExtensionLoader
+     * @see ServiceContext
      * @see URL
      * @see Extension
      */

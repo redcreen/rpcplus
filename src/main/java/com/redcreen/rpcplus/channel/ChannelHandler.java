@@ -32,14 +32,14 @@ public interface ChannelHandler {
      * 
      * @param channel channel.
      */
-    void connected(Attributeable channel) throws ChannelException;
+    void connected(Channel channel) throws ChannelException;
 
     /**
      * on channel disconnected.
      * 
      * @param channel channel.
      */
-    void disconnected(Attributeable channel) throws ChannelException;
+    void disconnected(Channel channel) throws ChannelException;
 
     /**
      * on message sent.
@@ -47,7 +47,7 @@ public interface ChannelHandler {
      * @param channel channel.
      * @param message message.
      */
-    void sent(Attributeable channel, Object message) throws ChannelException;
+    void sent(Channel channel, Object message) throws ChannelException;
 
     /**
      * on message received.
@@ -55,7 +55,7 @@ public interface ChannelHandler {
      * @param channel channel.
      * @param message message.
      */
-    void received(Attributeable channel, Object message) throws ChannelException;
+    void received(Channel channel, Object message) throws ChannelException;
 
     /**
      * on exception caught.
@@ -63,6 +63,6 @@ public interface ChannelHandler {
      * @param channel channel.
      * @param exception exception.
      */
-    void caught(Attributeable channel, Throwable exception) throws ChannelException;
+    void caught(Channel channel, Throwable exception) throws ChannelException;
 
 }
