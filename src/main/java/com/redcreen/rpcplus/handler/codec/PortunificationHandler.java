@@ -6,25 +6,33 @@ import java.io.InputStream;
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.codec.Codec;
-import com.redcreen.rpcplus.codec.Frame;
+import com.redcreen.rpcplus.codec.object.ExchangeCodec;
+import com.redcreen.rpcplus.support.ExtensionLoader;
 import com.redcreen.rpcplus.support.URL;
 
 public class PortunificationHandler extends AbstractCodecHandlerWrapper{
-    private final Codec codec ;
-    
+    private final Codec exchangeCodec = getCodec(ExchangeCodec.NAME);
+    private final Codec telnetCodec = getCodec("telnet");
     /**
      * @param url
      * @param handler
      */
     public PortunificationHandler(URL url, ChannelHandler handler) {
         super(url, handler);
-        codec = null; //ServiceContext.getContext(Codec.class).getService(
-//                url.getParameter(ChannelConstants.CODEC_KEY, ChannelConstants.CODEC_DEFAULT));
+        
     }
 
     @Override
     public Object decode(Channel channel, InputStream is) throws IOException{
-        Frame frame = codec.decode(channel, is);
-        return frame;
+        if (exchangeCodec.recognize(is)){
+            return exchangeCodec.decode(channel, is);
+        } else if (telnetCodec.recognize(is)){
+            return telnetCodec.decode(channel, is);
+        } 
+        return null;
+    }
+    
+    private Codec getCodec(String name){
+        return ExtensionLoader.getExtensionLoader(Codec.class).getExtension(name);
     }
 }

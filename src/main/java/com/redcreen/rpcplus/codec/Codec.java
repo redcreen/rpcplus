@@ -32,6 +32,8 @@ import com.redcreen.rpcplus.channel.Channel;
 @Singleton
 @ThreadSafe
 public interface Codec {
+    
+    public boolean recognize(InputStream input) ;
 
     /**
      * Encode message.
@@ -50,6 +52,6 @@ public interface Codec {
 	 * @param input input stream.
 	 * @return InputStream or null.
 	 */
-	Frame decode(Channel channel, InputStream input) throws IOException;
+	Object decode(Channel channel, InputStream input) throws IOException;
 
 }

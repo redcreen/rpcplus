@@ -27,7 +27,7 @@ public abstract class AbstractCodecHandlerWrapper extends AbstractChannelHandler
     }
 
     public void sent(Channel channel, Object message) throws ChannelException {
-        handler.sent(channel, encode(channel, message));
+        handler.sent(channel, message);
     }
     
     public void received(Channel channel, Object message) throws ChannelException {
@@ -43,7 +43,7 @@ public abstract class AbstractCodecHandlerWrapper extends AbstractChannelHandler
     }
 
     public void doReceived(Channel channel, InputStream input) throws ChannelException, IOException {
-        int readable = input.read();
+        int readable = input.available();
         if (readable <= 0) {
             return;
         }

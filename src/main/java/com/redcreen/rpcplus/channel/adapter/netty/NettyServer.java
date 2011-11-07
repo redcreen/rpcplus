@@ -6,8 +6,10 @@ import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -17,15 +19,20 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.adapter.Server;
+import com.redcreen.rpcplus.channel.support.Response;
+import com.redcreen.rpcplus.codec.Codec;
+import com.redcreen.rpcplus.support.ExtensionLoader;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.NamedThreadFactory;
 import com.redcreen.rpcplus.util.URLUtils;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
+import com.redcreen.rpcplus.util.io.UnsafeByteArrayOutputStream;
 
 public class NettyServer extends Server {
     private ServerBootstrap                                                    bootstrap;
@@ -47,10 +54,13 @@ public class NettyServer extends Server {
         bootstrap = new ServerBootstrap(channelFactory);
 
         final NettyHandlerAdpater handlerAdapater = new NettyHandlerAdpater();
+        final InternalEncoder encoder = new InternalEncoder();
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() {
                 ChannelPipeline pipeline = Channels.pipeline();
                 pipeline.addLast("handlerAdapter", handlerAdapater);
+                //TODO encode put channel handler ?
+                pipeline.addLast("encoder", encoder);
                 return pipeline;
             }
         });
@@ -65,19 +75,33 @@ public class NettyServer extends Server {
         }
         channel.close().await(URLUtils.getCloseTimeout(url));
     }
-
+    
+    @Sharable
+    private class InternalEncoder extends OneToOneEncoder {
+        Codec codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(URLUtils.getCodec(url));
+        @Override
+        protected Object encode(ChannelHandlerContext ctx, Channel ch, Object msg) throws Exception {
+            UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream(1024); // 不需要关闭
+            if(!(msg instanceof Response)){
+                codec.encode(getChannel(ctx.getChannel()), os, msg);
+            }else {
+                codec.encode(getChannel(ctx.getChannel()), os, msg);
+            }
+            return ChannelBuffers.wrappedBuffer(os.toByteBuffer());
+        }
+    }
     private class NettyHandlerAdpater extends SimpleChannelHandler {
 
         @Override
         public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
                 throws Exception {
-            handler.connected(getOrAddChannel(ctx.getChannel()));
+            handler.connected(addChannel(ctx.getChannel()));
         }
 
         @Override
         public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e)
                 throws Exception {
-            handler.disconnected(getOrAddChannel(ctx.getChannel()));
+            handler.disconnected(channels.remove(ctx.getChannel()));
         }
 
         @Override
@@ -95,28 +119,36 @@ public class NettyServer extends Server {
             }
             //TODO must copy?
             UnsafeByteArrayInputStream bis = new UnsafeByteArrayInputStream(input.array());
-            handler.received(getOrAddChannel(ctx.getChannel()), bis);
+            handler.received(getChannel(ctx.getChannel()), bis);
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-            handler.caught(getOrAddChannel(ctx.getChannel()), e.getCause());
+            handler.caught(getChannel(ctx.getChannel()), e.getCause());
         }
-
-        private com.redcreen.rpcplus.channel.Channel getOrAddChannel(Channel nettyChannel) {
-            com.redcreen.rpcplus.channel.Channel channel = channels.get(nettyChannel);
-            if (channel == null) {
-                com.redcreen.rpcplus.channel.Channel newChannel = new NettyChannelAdpater(
-                        nettyChannel, handler, url);
-                com.redcreen.rpcplus.channel.Channel ret = channels.putIfAbsent(nettyChannel,
-                        newChannel);
-                if (ret == null) {
-                    channel = newChannel;
-                } else {
-                    channel = ret;
-                }
+        
+        @Override
+        public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+            super.writeRequested(ctx, e);
+            handler.sent(getChannel(ctx.getChannel()), e.getMessage());
+        }
+    }
+    private com.redcreen.rpcplus.channel.Channel addChannel(Channel nettyChannel) {
+        com.redcreen.rpcplus.channel.Channel channel = channels.get(nettyChannel);
+        if (channel == null) {
+            com.redcreen.rpcplus.channel.Channel newChannel = new NettyChannelAdpater(
+                    nettyChannel, handler, url);
+            com.redcreen.rpcplus.channel.Channel ret = channels.putIfAbsent(nettyChannel,
+                    newChannel);
+            if (ret == null) {
+                channel = newChannel;
+            } else {
+                channel = ret;
             }
-            return channel;
         }
+        return channel;
+    }
+    private com.redcreen.rpcplus.channel.Channel getChannel(Channel nettyChannel) {
+        return channels.get(nettyChannel);
     }
 }

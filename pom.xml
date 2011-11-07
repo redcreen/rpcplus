@@ -11,6 +11,7 @@
 		<!-- Common libs -->
 		<javassist_version>3.15.0-GA</javassist_version>
 		<netty_version>3.2.5.Final</netty_version>
+		<fastjson_version>1.1.8</fastjson_version>
 
 		<java_source_version>1.6</java_source_version>
 		<java_target_version>1.6</java_target_version>
@@ -45,6 +46,11 @@
 				<version>${slf4j_version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j_version}</version>
+			</dependency>
+			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit_version}</version>
@@ -68,6 +74,11 @@
 				<groupId>org.jboss.netty</groupId>
 				<artifactId>netty</artifactId>
 				<version>${netty_version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson_version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -96,6 +107,10 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
@@ -103,9 +118,22 @@
 			<groupId>org.jboss.netty</groupId>
 			<artifactId>netty</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
 	</dependencies>
 	<repositories>
-
+		<repository>
+	      <releases>
+	        <enabled>true</enabled>
+	      </releases>
+	      <snapshots>
+	        <enabled>false</enabled>
+	      </snapshots>
+	      <id>opensesame.releases</id>
+	      <url>http://code.alibabatech.com/mvn/releases</url>
+	    </repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>

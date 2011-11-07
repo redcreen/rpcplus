@@ -22,7 +22,8 @@ public class Constants {
                                                                     .availableProcessors() + 1;
 
         public final static String  CHANNEL_SENT_KEY        = SYSTEM_PREFIX_KEY + "sent";
-        public final static boolean CHANNEL_SENT_DEFAULT    = true;
+        //TODO
+        public final static boolean CHANNEL_SENT_DEFAULT    = false;
 
         public final static String  PAYLOAD_KEY             = SYSTEM_PREFIX_KEY + "payload";
         public final static int     PAYLOAD_DEFAULT         = 1024 * 1024;
@@ -33,5 +34,7 @@ public class Constants {
         public final static String  CHECK_KEY               = SYSTEM_PREFIX_KEY + "check";
         public final static boolean CHECK_DEFAULT           = true;
 
+        public final static String  CHARSET_KEY             = SYSTEM_PREFIX_KEY + "charset";
+        
     }
 }
