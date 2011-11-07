@@ -7,25 +7,78 @@
  */
 package com.redcreen.rpcplus.channel.adapter;
 
-import com.redcreen.rpcplus.channel.Channel;
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.redcreen.rpcplus.channel.ChannelException;
+import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.Peer;
+import com.redcreen.rpcplus.support.Constants;
 import com.redcreen.rpcplus.support.URL;
+import com.redcreen.rpcplus.util.ExecutorUtil;
 
 public abstract class Server implements Peer {
+    private InetSocketAddress localAddress;
 
-    public Channel getChannel() {
-        // TODO Auto-generated method stub
-        return null;
+    private InetSocketAddress bindAddress;
+
+    private int               idleTimeout;
+
+    protected final URL         url;
+    
+    protected final ChannelHandler handler;
+
+    protected final Logger    logger = LoggerFactory.getLogger(getClass());
+
+    ExecutorService           executor;
+
+    public Server(URL url, ChannelHandler handler) throws ChannelException {
+        this.url = url;
+        this.handler = handler;
+        localAddress = url.toInetSocketAddress();
+        bindAddress = new InetSocketAddress(url.getHost(), url.getPort());
+        this.idleTimeout = url.getParameter(Constants.IDLE_TIMEOUT_KEY,
+                Constants.IDLE_TIMEOUT_DEFAULT);
+        try {
+            doOpen();
+            if (logger.isInfoEnabled()) {
+                logger.info("Start " + getClass().getSimpleName() + " bind " + getBindAddress()
+                        + ", export " + getLocalAddress());
+            }
+        } catch (Throwable t) {
+            throw new ChannelException(t);
+        }
+    }
+
+    protected abstract void doOpen() throws Throwable;
+
+    protected abstract void doClose() throws Throwable;
+
+    public void close(int timeout) throws ChannelException {
+        ExecutorUtil.shutdownNow(executor, timeout);
+        try {
+            doClose();
+        } catch (Throwable e) {
+            logger.warn(e.getMessage(), e);
+        }
+    }
+
+    public InetSocketAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    public InetSocketAddress getBindAddress() {
+        return bindAddress;
+    }
+
+    public int getIdleTimeout() {
+        return idleTimeout;
     }
 
     public URL getURL() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void close(int timeout) throws ChannelException {
-        // TODO Auto-generated method stub
-
+        return url;
     }
 }

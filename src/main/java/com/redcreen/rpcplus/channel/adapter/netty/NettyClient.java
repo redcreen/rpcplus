@@ -21,7 +21,6 @@ import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.Future;
 import com.redcreen.rpcplus.channel.adapter.Client;
-import com.redcreen.rpcplus.channel.support.Attributes;
 import com.redcreen.rpcplus.channel.support.ChannelUtil;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.URL;
@@ -35,17 +34,19 @@ public class NettyClient extends Client {
     private ClientBootstrap             bootstrap;
 
     private static ChannelFactory initChannelFactory() {
-        return new NioClientSocketChannelFactory(ExecutorUtils.newCachedExecutor("NettyClientBoss"),
-                                                 ExecutorUtils.newCachedExecutor("NettyClientWorker"),
-                                                 ChannelConstants.IO_THREADS_DEFAULT);
+        return new NioClientSocketChannelFactory(
+                ExecutorUtils.newCachedExecutor("NettyClientBoss"),
+                ExecutorUtils.newCachedExecutor("NettyClientWorker"),
+                ChannelConstants.IO_THREADS_DEFAULT);
     }
 
     /**
      * @param handler
      * @param url
+     * @throws ChannelException
      */
-    public NettyClient(ChannelHandler handler, URL url){
-        super(handler, url);
+    public NettyClient(ChannelHandler handler, URL url) throws ChannelException {
+        super(url, handler);
     }
 
     @Override
@@ -71,7 +72,8 @@ public class NettyClient extends Client {
     protected void doConnect() throws ChannelException {
         ChannelFuture future = bootstrap.connect(getConnectAddress());
         try {
-            boolean ret = future.awaitUninterruptibly(URLUtils.getTimeout(getURL()), TimeUnit.MILLISECONDS);
+            boolean ret = future.awaitUninterruptibly(URLUtils.getTimeout(getURL()),
+                    TimeUnit.MILLISECONDS);
 
             if (ret && future.isSuccess()) {
                 com.redcreen.rpcplus.channel.Channel oldChannel = channel;
@@ -79,32 +81,32 @@ public class NettyClient extends Client {
                     try {
                         oldChannel.close(URLUtils.getCloseTimeout(url));
                     } catch (Throwable t) {
-                        // TODO LOGER
+                        logger.error("old channel close error.", t);
                     }
                 }
                 Channel newChannel = future.getChannel();
                 newChannel.setInterestOps(Channel.OP_READ_WRITE);
-                com.redcreen.rpcplus.channel.Channel channelApater = new nettyChannelAdpater(newChannel);
+                com.redcreen.rpcplus.channel.Channel channelApater = new NettyChannelAdpater(
+                        newChannel, handler, url);
                 channel = channelApater;
             } else if (future.getCause() != null) {
                 throw future.getCause();
             } else {
                 throw new ChannelException(
-                                           channel,
-                                           "Failed to connect to server "
-                                                   + getRemoteAddress()
-                                                   + ", the future was not completed within the specified time limit, please check the timeout ["
-                                                   + URLUtils.getTimeout(url) + "] config .");
+                        channel,
+                        "Failed to connect to server "
+                                + getRemoteAddress()
+                                + ", the future was not completed within the specified time limit, please check the timeout ["
+                                + URLUtils.getTimeout(url) + "] config .");
             }
 
         } catch (Throwable t) {
-            // TODO
             throw new ChannelException(
-                                       channel,
-                                       "Failed to connect to server "
-                                               + getRemoteAddress()
-                                               + ", the future was not completed within the specified time limit, please check the timeout ["
-                                               + URLUtils.getTimeout(url) + "] config .");
+                    channel,
+                    "Failed to connect to server "
+                            + getRemoteAddress()
+                            + ", the future was not completed within the specified time limit, please check the timeout ["
+                            + URLUtils.getTimeout(url) + "] config .");
         } finally {
             if (channel != null && !channel.isConnected()) {
                 future.cancel();
@@ -120,8 +122,8 @@ public class NettyClient extends Client {
     @Override
     protected void doDisconnect() throws ChannelException {
         //anything else?
-
     }
+
     public Future request(Object request) throws ChannelException {
         return ChannelUtil.request(channel, request);
     }
@@ -136,109 +138,22 @@ public class NettyClient extends Client {
     }
 
     public InetSocketAddress getRemoteAddress() {
-        if (channel == null) return url.toInetSocketAddress();
+        if (channel == null)
+            return url.toInetSocketAddress();
         return channel.getRemoteAddress();
-    }
-
-    private class nettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel {
-
-        private Channel    nettyChannel;
-        private Attributes attributes = new Attributes();
-
-        public nettyChannelAdpater(Channel nettyChannel){
-            super();
-            this.nettyChannel = nettyChannel;
-        }
-
-        public boolean hasAttribute(String key) {
-            return attributes.hasAttribute(key);
-        }
-
-        public Object getAttribute(String key) {
-            return attributes.getAttribute(key);
-        }
-
-        public void setAttribute(String key, Object value) {
-            attributes.setAttribute(key, value);
-        }
-
-        public void removeAttribute(String key) {
-            attributes.removeAttribute(key);
-        }
-
-        public void send(Object message) throws ChannelException {
-            send(message, URLUtils.getSent(url));
-        }
-
-        public void send(Object message, boolean sent) throws ChannelException {
-            boolean success = true;
-            int timeout = 0;
-            try {
-                ChannelFuture future = nettyChannel.write(message);
-                if (sent) {
-                    success = future.await(URLUtils.getTimeout(url));
-                }
-            } catch (Throwable e) {
-                throw new ChannelException(channel, "Failed to send message " + message + " to " + getRemoteAddress()
-                                                    + ", cause: " + e.getMessage(), e);
-            }
-
-            if (!success) {
-                throw new ChannelException(channel, "Failed to send message " + message + " to " + getRemoteAddress()
-                                                    + "in timeout(" + timeout + "ms) limit");
-            }
-        }
-
-        public void close(int timeout) throws ChannelException {
-            try {
-                Channel channelCopy = nettyChannel;
-                if (channelCopy != null) {
-                    channelCopy.close().await(URLUtils.getCloseTimeout(url));
-                }
-            } catch (Throwable t) {
-
-            }
-            attributes.clear();
-        }
-
-        public boolean isConnected() {
-            Channel channelCopy = nettyChannel;
-            return channelCopy == null ? false : channelCopy.isConnected();
-        }
-
-        public boolean isClosed() {
-            Channel channelCopy = nettyChannel;
-            return channelCopy == null ? false : !channelCopy.isOpen();
-        }
-
-        public URL getUrl() {
-            return url;
-        }
-
-        public ChannelHandler getChannelHandler() {
-            return handler;
-        }
-
-        public InetSocketAddress getLocalAddress() {
-            Channel channelCopy = nettyChannel;
-            return channelCopy == null ? null : (InetSocketAddress)channelCopy.getLocalAddress();
-        }
-
-        public InetSocketAddress getRemoteAddress() {
-            Channel channelCopy = nettyChannel;
-            return channelCopy == null ? null : (InetSocketAddress)channelCopy.getRemoteAddress();
-        }
     }
 
     private class NettyHandlerAdpater extends SimpleChannelHandler {
 
         @Override
-        public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
+                throws Exception {
             handler.connected(channel);
         }
 
         @Override
-        public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e)
+                throws Exception {
             handler.disconnected(channel);
         }
 

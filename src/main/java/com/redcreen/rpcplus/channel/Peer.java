@@ -11,14 +11,8 @@ import com.redcreen.rpcplus.support.URL;
 
 public interface Peer {
 
-    public abstract Channel getChannel();
-
     public abstract URL getURL();
     
-    public void send(Object message) throws ChannelException;
-    
-    public Future request(Object message)  throws ChannelException;
-
     public abstract void close(int timeout) throws ChannelException;
 
 }

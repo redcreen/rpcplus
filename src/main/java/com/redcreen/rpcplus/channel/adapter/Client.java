@@ -10,22 +10,27 @@ package com.redcreen.rpcplus.channel.adapter;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.Peer;
+import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.URL;
+import com.redcreen.rpcplus.util.URLUtils;
 
 /**
  */
 public abstract class Client implements Peer {
+    protected Logger                 logger      = LoggerFactory.getLogger(getClass());
+    protected final ChannelHandler handler;
+    protected volatile Channel     channel;
+    protected final URL            url;
+    private final Lock             connectLock = new ReentrantLock();
 
-    protected final ChannelHandler                   handler;
-    protected volatile Channel                       channel;
-    protected final URL                              url;
-    private final Lock                               connectLock              = new ReentrantLock();
-
-    public Client(ChannelHandler handler, URL url){
+    public Client(URL url, ChannelHandler handler) throws ChannelException {
         super();
         this.handler = handler;
         this.url = url;
@@ -33,28 +38,20 @@ public abstract class Client implements Peer {
             doOpen();
         } catch (Throwable t) {
             close();
-            // throw new ChannelException(channel, t);
+            throw new ChannelException(channel, t);
         }
         try {
-            // connect.
             connect();
-            // if (logger.isInfoEnabled()) {
-            // logger.info("Start " + getClass().getSimpleName() + " " + NetUtils.getLocalAddress() +
-            // " connect to the server " + getRemoteAddress());
-            // }
         } catch (ChannelException t) {
-            // if (url.getParameter(Constants.CHECK_KEY, true)) {
-            close();
-            // throw t;
-            // } else {
-            // // logger.error("Failed to start " + getClass().getSimpleName() + " " + NetUtils.getLocalAddress()
-            // // + " connect to the server " + getRemoteAddress() + ", cause: " + t.getMessage(), t);
-            // }
+            if (url.getParameter(ChannelConstants.CHECK_KEY, true)) {
+                close();
+                throw t;
+            } else {
+                logger.error("Failed connect to the server .url :" + url, t);
+            }
         } catch (Throwable t) {
             close();
-            // throw new RemotingException(url.toInetSocketAddress(), null,
-            // "Failed to start " + getClass().getSimpleName() + " " + NetUtils.getLocalAddress()
-            // + " connect to the server " + getRemoteAddress() + ", cause: " + t.getMessage(), t);
+            throw new ChannelException(t);
         }
     }
 
@@ -74,18 +71,17 @@ public abstract class Client implements Peer {
         try {
             channel.close(timeout);
         } catch (Exception e) {
-            // TODO: handle exception
+            logger.error("client close error ." , e);
         }
         try {
             doClose();
         } catch (ChannelException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("client close error ." , e);
         }
     }
 
     public void close() {
-        close(5000);// TODO
+        close(URLUtils.getCloseTimeout(url));
     }
 
     protected void connect() throws ChannelException {
@@ -93,7 +89,7 @@ public abstract class Client implements Peer {
         try {
             doConnect();
         } catch (Exception e) {
-             throw new ChannelException(e);
+            throw new ChannelException(e);
         } finally {
             connectLock.unlock();
         }
@@ -104,7 +100,7 @@ public abstract class Client implements Peer {
     protected abstract void doClose() throws ChannelException;
 
     protected abstract void doConnect() throws ChannelException;
-    
+
     protected abstract void doDisconnect() throws ChannelException;
-    
+
 }
