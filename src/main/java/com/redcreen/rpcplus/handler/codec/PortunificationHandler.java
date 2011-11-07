@@ -7,8 +7,6 @@ import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.codec.Codec;
 import com.redcreen.rpcplus.codec.Frame;
-import com.redcreen.rpcplus.support.Constants.ChannelConstants;
-import com.redcreen.rpcplus.support.ServiceContext;
 import com.redcreen.rpcplus.support.URL;
 
 public class PortunificationHandler extends AbstractCodecHandlerWrapper{
@@ -20,8 +18,8 @@ public class PortunificationHandler extends AbstractCodecHandlerWrapper{
      */
     public PortunificationHandler(URL url, ChannelHandler handler) {
         super(url, handler);
-        codec = ServiceContext.getExtensionLoader(Codec.class).getExtension(
-                url.getParameter(ChannelConstants.CODEC_KEY, ChannelConstants.CODEC_DEFAULT));
+        codec = null; //ServiceContext.getContext(Codec.class).getService(
+//                url.getParameter(ChannelConstants.CODEC_KEY, ChannelConstants.CODEC_DEFAULT));
     }
 
     @Override

@@ -2,9 +2,9 @@ package com.redcreen.rpcplus.codec;
 
 import java.io.InputStream;
 
-import com.redcreen.rpcplus.Annotations.API;
-import com.redcreen.rpcplus.Annotations.Prototype;
-import com.redcreen.rpcplus.Annotations.ThreadSafe;
+import com.redcreen.rpcplus.annotations.API;
+import com.redcreen.rpcplus.annotations.Prototype;
+import com.redcreen.rpcplus.annotations.ThreadSafe;
 import com.redcreen.rpcplus.channel.Channel;
 
 /**

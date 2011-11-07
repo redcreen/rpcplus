@@ -15,10 +15,10 @@
  */
 package com.redcreen.rpcplus;
 
-import com.redcreen.rpcplus.Annotations.API;
-import com.redcreen.rpcplus.Annotations.Prototype;
-import com.redcreen.rpcplus.Annotations.SPI;
-import com.redcreen.rpcplus.Annotations.ThreadSafe;
+import com.redcreen.rpcplus.annotations.API;
+import com.redcreen.rpcplus.annotations.Prototype;
+import com.redcreen.rpcplus.annotations.SPI;
+import com.redcreen.rpcplus.annotations.ThreadSafe;
 
 /**
  * RPC invoke result.

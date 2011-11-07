@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.redcreen.rpcplus.Annotations.SPI;
-import com.redcreen.rpcplus.Annotations.Singleton;
-import com.redcreen.rpcplus.Annotations.ThreadSafe;
+import com.redcreen.rpcplus.annotations.SPI;
+import com.redcreen.rpcplus.annotations.Singleton;
+import com.redcreen.rpcplus.annotations.ThreadSafe;
 import com.redcreen.rpcplus.channel.Channel;
 
 /**
