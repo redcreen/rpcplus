@@ -4,9 +4,12 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -16,17 +19,20 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.Future;
 import com.redcreen.rpcplus.channel.adapter.Client;
-import com.redcreen.rpcplus.channel.support.ChannelUtil;
+import com.redcreen.rpcplus.channel.support.Response;
+import com.redcreen.rpcplus.codec.Codec;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
+import com.redcreen.rpcplus.support.ExtensionLoader;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.ExecutorUtils;
-import com.redcreen.rpcplus.util.NetUtils;
 import com.redcreen.rpcplus.util.URLUtils;
+import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
+import com.redcreen.rpcplus.util.io.UnsafeByteArrayOutputStream;
 
 public class NettyClient extends Client {
 
@@ -41,11 +47,11 @@ public class NettyClient extends Client {
     }
 
     /**
-     * @param handler
      * @param url
+     * @param handler
      * @throws ChannelException
      */
-    public NettyClient(ChannelHandler handler, URL url) throws ChannelException {
+    public NettyClient(URL url, ChannelHandler handler) throws ChannelException {
         super(url, handler);
     }
 
@@ -58,11 +64,13 @@ public class NettyClient extends Client {
         bootstrap.setOption("tcpNoDelay", true);
         bootstrap.setOption("connectTimeoutMillis", URLUtils.getTimeout(getURL()));
         final NettyHandlerAdpater nettyHandler = new NettyHandlerAdpater();
+        final InternalEncoder encoder = new InternalEncoder();
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 
             public ChannelPipeline getPipeline() {
                 ChannelPipeline pipeline = Channels.pipeline();
                 pipeline.addLast("handler", nettyHandler);
+                pipeline.addLast("encoder", encoder);
                 return pipeline;
             }
         });
@@ -124,17 +132,13 @@ public class NettyClient extends Client {
         //anything else?
     }
 
-    public Future request(Object request) throws ChannelException {
-        return ChannelUtil.request(channel, request);
-    }
-
     public void send(Object message) throws ChannelException {
         channel.send(message);
 
     }
 
     public InetSocketAddress getConnectAddress() {
-        return new InetSocketAddress(NetUtils.filterLocalHost(url.getHost()), url.getPort());
+        return new InetSocketAddress(url.getHost(), url.getPort());
     }
 
     public InetSocketAddress getRemoteAddress() {
@@ -143,6 +147,21 @@ public class NettyClient extends Client {
         return channel.getRemoteAddress();
     }
 
+    @Sharable
+    private class InternalEncoder extends OneToOneEncoder {
+        Codec codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(URLUtils.getCodec(url));
+        @Override
+        protected Object encode(ChannelHandlerContext ctx, Channel ch, Object msg) throws Exception {
+            UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream(1024); // 不需要关闭
+            if(!(msg instanceof Response)){
+                codec.encode(channel, os, msg);
+            }else {
+                codec.encode(channel, os, msg);
+            }
+            return ChannelBuffers.wrappedBuffer(os.toByteBuffer());
+        }
+    }
+    
     private class NettyHandlerAdpater extends SimpleChannelHandler {
 
         @Override
@@ -159,7 +178,20 @@ public class NettyClient extends Client {
 
         @Override
         public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-            handler.received(channel, e.getMessage());
+            Object o = e.getMessage();
+            if (!(o instanceof ChannelBuffer)) {
+                ctx.sendUpstream(e);
+                return;
+            }
+
+            ChannelBuffer input = (ChannelBuffer) o;
+            int readable = input.readableBytes();
+            if (readable <= 0) {
+                return;
+            }
+            //TODO must copy?
+            UnsafeByteArrayInputStream bis = new UnsafeByteArrayInputStream(input.array());
+            handler.received(channel, bis);
         }
 
         @Override

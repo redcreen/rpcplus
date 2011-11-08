@@ -64,12 +64,14 @@ public abstract class Client implements Peer {
     }
 
     public URL getURL() {
-        return channel == null ? null : channel.getUrl();
+        return url;
     }
 
     public void close(int timeout) {
         try {
-            channel.close(timeout);
+            if (channel != null ){
+                channel.close(timeout);
+            }
         } catch (Exception e) {
             logger.error("client close error ." , e);
         }

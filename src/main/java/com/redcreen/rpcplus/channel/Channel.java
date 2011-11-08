@@ -39,6 +39,8 @@ public interface Channel extends Attributeable {
      * @param sent 是否已发送完成
      */
     void send(Object message, boolean sent) throws ChannelException;
+    
+    Future request(Object request) throws ChannelException;
 
     /**
      * Graceful close the channel.
@@ -86,5 +88,7 @@ public interface Channel extends Attributeable {
      * @return remote address.
      */
     InetSocketAddress getRemoteAddress();
+
+    
 
 }

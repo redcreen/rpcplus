@@ -96,7 +96,7 @@ public class DefaultFuture implements Future {
                 lock.unlock();
             }
             if (! isDone()) {
-//                throw new TimeoutException(sent > 0, channel, getTimeoutMessage(false));
+                throw new TimeoutException(sent > 0, channel, getTimeoutMessage(false));
             }
         }
         return returnFromResponse();

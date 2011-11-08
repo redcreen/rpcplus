@@ -3,8 +3,9 @@ package com.redcreen.rpcplus.handler;
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
+import com.redcreen.rpcplus.channel.ChannelHandlerWrapper;
 
-public class AbstractChannelHandlerWrapper implements ChannelHandler {
+public class AbstractChannelHandlerWrapper implements ChannelHandler ,ChannelHandlerWrapper{
     
     protected ChannelHandler handler ;
     
@@ -39,4 +40,12 @@ public class AbstractChannelHandlerWrapper implements ChannelHandler {
         handler.caught(channel, exception);
     }
 
+    @Override
+    public ChannelHandler getChannelHandler() {
+        if (handler instanceof ChannelHandlerWrapper){
+            return ((ChannelHandlerWrapper)handler).getChannelHandler();
+        } else {
+            return handler;
+        }
+    }
 }

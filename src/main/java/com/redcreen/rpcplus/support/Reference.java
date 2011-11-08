@@ -18,7 +18,6 @@ package com.redcreen.rpcplus.support;
 /**
  * 
  */
-@Deprecated
 public class Reference<T> {
     
     private T value;

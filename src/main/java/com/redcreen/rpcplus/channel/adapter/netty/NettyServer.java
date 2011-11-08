@@ -81,6 +81,7 @@ public class NettyServer extends Server {
         Codec codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(URLUtils.getCodec(url));
         @Override
         protected Object encode(ChannelHandlerContext ctx, Channel ch, Object msg) throws Exception {
+            //TODO codec 自动识别.
             UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream(1024); // 不需要关闭
             if(!(msg instanceof Response)){
                 codec.encode(getChannel(ctx.getChannel()), os, msg);

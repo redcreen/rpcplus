@@ -7,7 +7,9 @@ import org.jboss.netty.channel.ChannelFuture;
 
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
+import com.redcreen.rpcplus.channel.Future;
 import com.redcreen.rpcplus.channel.support.Attributes;
+import com.redcreen.rpcplus.channel.support.ChannelUtil;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.URLUtils;
 
@@ -59,6 +61,11 @@ public class NettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel
         if (!success) {
             throw new ChannelException(new IllegalStateException("channel wirte message error"));
         }
+    }
+    
+    @Override
+    public Future request(Object request) throws ChannelException {
+        return ChannelUtil.request(this, request);
     }
 
     public void close(int timeout) throws ChannelException {

@@ -3,7 +3,7 @@ package com.redcreen.rpcplus.support;
 public class Constants {
 
     public final static String version                   = "0.0.1";
-    public final static String SYSTEM_PREFIX_KEY         = "_";
+    public final static String SYSTEM_PREFIX_KEY         = ""; //TODO
     public final static String TIMEOUT_KEY               = SYSTEM_PREFIX_KEY + "timeout";
     public final static int    TIMEOUT_DEFAULT           = 5000;
 
