@@ -38,4 +38,8 @@ public class URLUtils {
     public static String getCodec(URL url) {
         return url.getParameter(ChannelConstants.CODEC_KEY, ChannelConstants.CODEC_DEFAULT);
     }
+    
+    public static String getSerialization(URL url) {
+        return url.getParameter(ChannelConstants.SERIALIZATION_KEY, ChannelConstants.SERIALIZATION_DEFAULT);
+    }
 }

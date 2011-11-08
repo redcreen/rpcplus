@@ -30,6 +30,10 @@ public class Constants {
 
         public final static String  CODEC_KEY               = SYSTEM_PREFIX_KEY + "codec";
         public final static String  CODEC_DEFAULT           = "telnet";
+        
+        public final static String  SERIALIZATION_KEY               = SYSTEM_PREFIX_KEY + "serialization";
+        public final static String  SERIALIZATION_DEFAULT           = "java";
+        
 
         public final static String  CHECK_KEY               = SYSTEM_PREFIX_KEY + "check";
         public final static boolean CHECK_DEFAULT           = true;

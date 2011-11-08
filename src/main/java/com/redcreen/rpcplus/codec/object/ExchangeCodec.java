@@ -18,19 +18,18 @@ package com.redcreen.rpcplus.codec.object;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.redcreen.rpcplus.channel.Channel;
+import com.redcreen.rpcplus.channel.support.Request;
+import com.redcreen.rpcplus.channel.support.Response;
 import com.redcreen.rpcplus.codec.AbstractCodec;
-import com.redcreen.rpcplus.codec.Frame;
+import com.redcreen.rpcplus.serialize.ObjectInput;
 import com.redcreen.rpcplus.serialize.Serialization;
 import com.redcreen.rpcplus.support.Extension;
-import com.redcreen.rpcplus.support.ExtensionLoader;
+import com.redcreen.rpcplus.util.StringUtils;
 import com.redcreen.rpcplus.util.io.Bytes;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 
@@ -60,36 +59,10 @@ public class ExchangeCodec extends AbstractCodec {
 
     protected static final int              SERIALIZATION_MASK   = 0x1f;
 
-    private static Map<Byte, Serialization> ID_SERIALIZATION_MAP = new HashMap<Byte, Serialization>();
-    static {
-        Set<String> supportedExtensions = ExtensionLoader.getExtensionLoader(Serialization.class)
-                .getSupportedExtensions();
-        for (String name : supportedExtensions) {
-            Serialization serialization = ExtensionLoader.getExtensionLoader(Serialization.class)
-                    .getExtension(name);
-            byte idByte = serialization.getContentTypeId();
-            if (ID_SERIALIZATION_MAP.containsKey(idByte)) {
-                logger.error("Serialization extension " + serialization.getClass().getName()
-                        + " has duplicate id to Serialization extension "
-                        + ID_SERIALIZATION_MAP.get(idByte).getClass().getName()
-                        + ", ignore this Serialization extension");
-                continue;
-            }
-            ID_SERIALIZATION_MAP.put(idByte, serialization);
-        }
-    }
-
-    public Short getMagicCode() {
-        return MAGIC;
-    }
-
     public void encode(Channel channel, OutputStream os, Object msg) throws IOException {
         //TODO
     }
 
-    /**
-     * header尽可能读到满足 HEADER_LENGTH.否则可能出现误判.
-     */
     @Override
     public boolean recognize(InputStream is) {
         byte[] header;
@@ -110,7 +83,7 @@ public class ExchangeCodec extends AbstractCodec {
         return false;
     }
 
-    public Object decode(Channel channel, InputStream is) throws IOException {
+    public Object read(Channel channel, InputStream is) throws IOException {
         int readable = is.available();
         byte[] header = new byte[Math.min(readable, HEADER_LENGTH)];
         is.read(header);
@@ -131,7 +104,86 @@ public class ExchangeCodec extends AbstractCodec {
         is.read(buf, header.length, len);
 
         UnsafeByteArrayInputStream bis = new UnsafeByteArrayInputStream(buf);
-        Frame frame = new Frame(channel, bis);
-        return frame;
+        return bis;
+    }
+
+    @Override
+    public Object decode(Channel channel, Object input) throws IOException {
+        UnsafeByteArrayInputStream is = (UnsafeByteArrayInputStream)input;
+        byte[] header = new byte[HEADER_LENGTH];
+        is.read(header);
+        
+        byte flag = header[2], proto = (byte)( flag & SERIALIZATION_MASK );
+        Serialization s = getSerializationById(proto);
+        if (s == null) {
+            s = getSerialization(channel);
+        }
+        ObjectInput in = s.deserialize(channel.getUrl(), is);
+        // get request id.
+        long id = Bytes.bytes2long(header, 4);
+        if( ( flag & FLAG_REQUEST ) == 0 ) {
+            // decode response.
+            Response res = new Response(id);
+            res.setHeartbeat( ( flag & FLAG_HEARTBEAT ) != 0 );
+            // get status.
+            byte status = header[3];
+            res.setStatus(status);
+            if( status == Response.OK ) {
+                try {
+                    Object data;
+                    if (res.isHeartbeat()) {
+                        data = decodeHeartbeatData(channel, in);
+                    } else {
+                        data = decodeResponseData(channel, in);
+                    }
+                    res.setResult(data);
+                } catch (Throwable t) {
+                    res.setStatus(Response.CLIENT_ERROR);
+                    res.setErrorMessage(StringUtils.toString(t));
+                }
+            } else {
+                res.setErrorMessage(in.readUTF());
+            }
+            return res;
+        } else {
+            // decode request.
+            Request req = new Request(id);
+            req.setVersion("2.0.0");
+            req.setTwoWay( ( flag & FLAG_TWOWAY ) != 0 );
+            req.setHeartbeat( ( flag & FLAG_HEARTBEAT ) != 0 );
+            try {
+                Object data;
+                if (req.isHeartbeat()) {
+                    data = decodeHeartbeatData(channel, in);
+                } else {
+                    data = decodeRequestData(channel, in);
+                }
+                req.setData(data);
+            } catch (Throwable t) {
+                // bad request
+                req.setBroken(true);
+                req.setData(t);
+            }
+            return req;
+        }
+    }
+    
+    protected Object decodeResponseData(Channel channel, ObjectInput in) throws IOException {
+        return decodeData(channel, in);
+    }
+    protected Object decodeHeartbeatData(Channel channel, ObjectInput in) throws IOException {
+        return decodeData(channel, in);
+    }
+
+    protected Object decodeRequestData(Channel channel, ObjectInput in) throws IOException {
+        return decodeData(channel, in);
+    }
+    
+    protected Object decodeData(Channel channel, ObjectInput in) throws IOException {
+        try {
+            return in.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException(StringUtils.toString("Read object failed.", e));
+        }
     }
 }

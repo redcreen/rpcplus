@@ -34,6 +34,24 @@ import com.redcreen.rpcplus.channel.Channel;
 public interface Codec {
     
     public boolean recognize(InputStream input) ;
+    
+    /**
+     * read the inputStream 
+     * @param channel
+     * @param input
+     * @return null: need read more .
+     * @throws IOException
+     */
+    Object read(Channel channel, InputStream input) throws IOException;
+
+    /**
+	 * Decode message.
+	 * 
+	 * @param channel channel.
+	 * @param input input stream.
+	 * @return InputStream or null.
+	 */
+	Object decode(Channel channel, Object input) throws IOException;
 
     /**
      * Encode message.
@@ -43,15 +61,5 @@ public interface Codec {
      * @param message message.
      */
     void encode(Channel channel, OutputStream output, Object message) throws IOException;
-
-	/**
-	 * Decode message.
-	 * 
-	 * @see #NEED_MORE_INPUT
-	 * @param channel channel.
-	 * @param input input stream.
-	 * @return InputStream or null.
-	 */
-	Object decode(Channel channel, InputStream input) throws IOException;
 
 }

@@ -68,11 +68,15 @@ public class TelnetCodec extends AbstractCodec {
 //        }
     }
     
-    public Object decode(Channel channel, InputStream is) throws IOException {
+    public Object read(Channel channel, InputStream is) throws IOException {
         int readable = is.available();
         byte[] message = new byte[readable];
         is.read(message);
         return decode(channel, is, readable, message);
+    }
+    
+    public Object decode(Channel channel, Object is) throws IOException {
+        return is ;
     }
 
     @SuppressWarnings("unchecked")

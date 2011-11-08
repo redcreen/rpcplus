@@ -12,7 +12,7 @@ import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.io.Bytes;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 
-public abstract class AbstractCodecHandlerWrapper extends AbstractChannelHandlerWrapper {
+public abstract class AbstractFrameCodecHandlerWrapper extends AbstractChannelHandlerWrapper {
     
     private final int            bufferSize;
     
@@ -20,7 +20,7 @@ public abstract class AbstractCodecHandlerWrapper extends AbstractChannelHandler
 
     private byte[] mBuffer = null;
 
-    public AbstractCodecHandlerWrapper(URL url, ChannelHandler handler) {
+    public AbstractFrameCodecHandlerWrapper(URL url, ChannelHandler handler) {
         super(handler);
         //TODO
         this.bufferSize = 8096;
