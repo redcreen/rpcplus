@@ -22,19 +22,19 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 
 import com.redcreen.rpcplus.channel.ChannelException;
-import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.adapter.Client;
+import com.redcreen.rpcplus.channel.adapter.AbstractClient;
 import com.redcreen.rpcplus.channel.support.Response;
 import com.redcreen.rpcplus.codec.Codec;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
+import com.redcreen.rpcplus.support.Extension;
 import com.redcreen.rpcplus.support.ExtensionLoader;
-import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.ExecutorUtils;
 import com.redcreen.rpcplus.util.URLUtils;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayOutputStream;
 
-public class NettyClient extends Client {
+@Extension("nettyclient")
+public class NettyClient extends AbstractClient {
 
     private static final ChannelFactory channelFactory = initChannelFactory();
     private ClientBootstrap             bootstrap;
@@ -44,15 +44,6 @@ public class NettyClient extends Client {
                 ExecutorUtils.newCachedExecutor("NettyClientBoss"),
                 ExecutorUtils.newCachedExecutor("NettyClientWorker"),
                 ChannelConstants.IO_THREADS_DEFAULT);
-    }
-
-    /**
-     * @param url
-     * @param handler
-     * @throws ChannelException
-     */
-    public NettyClient(URL url, ChannelHandler handler) throws ChannelException {
-        super(url, handler);
     }
 
     @Override

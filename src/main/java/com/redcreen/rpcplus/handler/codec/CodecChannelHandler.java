@@ -19,7 +19,7 @@ public class CodecChannelHandler extends AbstractChannelHandlerWrapper{
      * @param handler
      */
     public CodecChannelHandler(URL url, ChannelHandler handler) {
-        super(handler);
+        super(url, handler);
     }
     
     public void received(Channel channel, Object message) throws ChannelException {

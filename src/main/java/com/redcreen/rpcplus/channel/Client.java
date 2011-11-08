@@ -15,7 +15,9 @@
  */
 package com.redcreen.rpcplus.channel;
 
-public interface ChannelHandlerWrapper {
-    
-    ChannelHandler getChannelHandler();
+
+public interface Client extends Peer{
+
+    public abstract Channel getChannel();
+
 }

@@ -11,13 +11,14 @@ import com.redcreen.rpcplus.channel.support.DefaultFuture;
 import com.redcreen.rpcplus.channel.support.Request;
 import com.redcreen.rpcplus.channel.support.Response;
 import com.redcreen.rpcplus.handler.AbstractChannelHandlerWrapper;
+import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.StringUtils;
 
 public class ExchangeChannelHandlerWrapper extends AbstractChannelHandlerWrapper {
     private static final Logger logger = LoggerFactory.getLogger(ExchangeChannelHandlerWrapper.class);
     
-    public ExchangeChannelHandlerWrapper(ChannelHandler handler) {
-        super(handler);
+    public ExchangeChannelHandlerWrapper(URL url, ChannelHandler handler) {
+        super(url, handler);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.redcreen.rpcplus.channel.adapter.netty;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,25 +23,25 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
-import com.redcreen.rpcplus.channel.ChannelException;
-import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.adapter.Server;
+import com.redcreen.rpcplus.channel.adapter.AbstractServer;
 import com.redcreen.rpcplus.channel.support.Response;
 import com.redcreen.rpcplus.codec.Codec;
+import com.redcreen.rpcplus.support.Extension;
 import com.redcreen.rpcplus.support.ExtensionLoader;
-import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.NamedThreadFactory;
 import com.redcreen.rpcplus.util.URLUtils;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayOutputStream;
 
-public class NettyServer extends Server {
+@Extension("nettyserver")
+public class NettyServer extends AbstractServer {
     private ServerBootstrap                                                    bootstrap;
     private Channel                                                            channel;
     private final ConcurrentMap<Channel, com.redcreen.rpcplus.channel.Channel> channels = new ConcurrentHashMap<Channel, com.redcreen.rpcplus.channel.Channel>();
 
-    public NettyServer(URL url, ChannelHandler handler) throws ChannelException {
-        super(url, handler);
+    @Override
+    public Collection<com.redcreen.rpcplus.channel.Channel> getChannels() {
+        return channels.values();
     }
 
     @Override

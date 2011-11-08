@@ -16,22 +16,21 @@ import org.slf4j.LoggerFactory;
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.Peer;
+import com.redcreen.rpcplus.channel.Client;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.URLUtils;
 
 /**
  */
-public abstract class Client implements Peer {
+public abstract class AbstractClient implements Client {
     protected Logger                 logger      = LoggerFactory.getLogger(getClass());
-    protected final ChannelHandler handler;
+    protected ChannelHandler handler;
     protected volatile Channel     channel;
-    protected final URL            url;
-    private final Lock             connectLock = new ReentrantLock();
+    protected URL            url;
+    private Lock             connectLock = new ReentrantLock();
 
-    public Client(URL url, ChannelHandler handler) throws ChannelException {
-        super();
+    public void start(URL url, ChannelHandler handler) throws ChannelException {
         this.handler = handler;
         this.url = url;
         try {
@@ -59,6 +58,10 @@ public abstract class Client implements Peer {
         return handler;
     }
 
+    /* (non-Javadoc)
+     * @see com.redcreen.rpcplus.channel.adapter.Client1#getChannel()
+     */
+    @Override
     public Channel getChannel() {
         return channel;
     }

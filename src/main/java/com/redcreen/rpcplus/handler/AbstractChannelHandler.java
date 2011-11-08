@@ -4,7 +4,7 @@ import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 
-public class AbstractChannelHandler implements ChannelHandler {
+public abstract class AbstractChannelHandler implements ChannelHandler {
 
     @Override
     public void connected(Channel channel) throws ChannelException {

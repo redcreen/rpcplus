@@ -15,27 +15,27 @@ import org.slf4j.LoggerFactory;
 
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.Peer;
+import com.redcreen.rpcplus.channel.Server;
 import com.redcreen.rpcplus.support.Constants;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.ExecutorUtil;
 
-public abstract class Server implements Peer {
+public abstract class AbstractServer implements Server {
     private InetSocketAddress localAddress;
 
     private InetSocketAddress bindAddress;
 
     private int               idleTimeout;
 
-    protected final URL         url;
+    protected URL         url;
     
-    protected final ChannelHandler handler;
+    protected ChannelHandler handler;
 
-    protected final Logger    logger = LoggerFactory.getLogger(getClass());
+    protected Logger    logger = LoggerFactory.getLogger(getClass());
 
     ExecutorService           executor;
 
-    public Server(URL url, ChannelHandler handler) throws ChannelException {
+    public void start(URL url, ChannelHandler handler) throws ChannelException {
         this.url = url;
         this.handler = handler;
         localAddress = url.toInetSocketAddress();

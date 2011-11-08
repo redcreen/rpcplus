@@ -21,7 +21,7 @@ public abstract class AbstractFrameCodecHandlerWrapper extends AbstractChannelHa
     private byte[] mBuffer = null;
 
     public AbstractFrameCodecHandlerWrapper(URL url, ChannelHandler handler) {
-        super(handler);
+        super(url, handler);
         //TODO
         this.bufferSize = 8096;
     }

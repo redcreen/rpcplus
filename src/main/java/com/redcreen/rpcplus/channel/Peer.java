@@ -14,5 +14,7 @@ public interface Peer {
     public abstract URL getURL();
     
     public abstract void close(int timeout) throws ChannelException;
+    
+    public abstract void start(URL url, ChannelHandler handler) throws ChannelException;
 
 }

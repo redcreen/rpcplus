@@ -3,7 +3,7 @@ package com.redcreen.rpcplus.support;
 public class Constants {
 
     public final static String version                   = "0.0.1";
-    public final static String SYSTEM_PREFIX_KEY         = ""; //TODO
+    public final static String SYSTEM_PREFIX_KEY         = "";                                 //TODO
     public final static String TIMEOUT_KEY               = SYSTEM_PREFIX_KEY + "timeout";
     public final static int    TIMEOUT_DEFAULT           = 5000;
 
@@ -12,6 +12,13 @@ public class Constants {
 
     public final static String CLOSE_TIMEOUT_KEY         = SYSTEM_PREFIX_KEY + "close.timeout";
     public final static int    CLOSE_TIMEOUT_KEY_DEFAULT = 5000;
+
+    public final static String CONNECT_QUENE_LIMIT_KEY   = SYSTEM_PREFIX_KEY
+                                                                 + "connect.queue.limit";
+    public final static int    CONNECT_QUENE_LIMIT_SIZE  = Integer.MAX_VALUE;
+    
+    public final static String THREAD_NAME_KEY           = SYSTEM_PREFIX_KEY + "thread.name";
+    public final static String THREAD_NAME_DEFAULT       = "RPCPLUS";
 
     public static class ChannelConstants {
 
@@ -30,15 +37,14 @@ public class Constants {
 
         public final static String  CODEC_KEY               = SYSTEM_PREFIX_KEY + "codec";
         public final static String  CODEC_DEFAULT           = "telnet";
-        
-        public final static String  SERIALIZATION_KEY               = SYSTEM_PREFIX_KEY + "serialization";
-        public final static String  SERIALIZATION_DEFAULT           = "java";
-        
+
+        public final static String  SERIALIZATION_KEY       = SYSTEM_PREFIX_KEY + "serialization";
+        public final static String  SERIALIZATION_DEFAULT   = "java";
 
         public final static String  CHECK_KEY               = SYSTEM_PREFIX_KEY + "check";
         public final static boolean CHECK_DEFAULT           = true;
 
         public final static String  CHARSET_KEY             = SYSTEM_PREFIX_KEY + "charset";
-        
+
     }
 }

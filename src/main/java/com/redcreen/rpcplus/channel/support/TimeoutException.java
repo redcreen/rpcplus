@@ -24,6 +24,7 @@ import com.redcreen.rpcplus.channel.ChannelException;
  * TimeoutException. (API, Prototype, ThreadSafe)
  * 
  */
+//TODO
 public class TimeoutException extends ChannelException {
 
     private static final long serialVersionUID = 3122966731958222692L;

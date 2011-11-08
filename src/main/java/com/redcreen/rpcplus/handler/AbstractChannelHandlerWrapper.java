@@ -4,13 +4,13 @@ import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.ChannelHandlerWrapper;
+import com.redcreen.rpcplus.support.URL;
 
-public class AbstractChannelHandlerWrapper implements ChannelHandler ,ChannelHandlerWrapper{
+public abstract class AbstractChannelHandlerWrapper implements ChannelHandler ,ChannelHandlerWrapper{
     
     protected ChannelHandler handler ;
     
-    
-    public AbstractChannelHandlerWrapper(ChannelHandler handler) {
+    public AbstractChannelHandlerWrapper(URL url, ChannelHandler handler) {
         super();
         this.handler = handler;
     }

@@ -42,4 +42,15 @@ public class URLUtils {
     public static String getSerialization(URL url) {
         return url.getParameter(ChannelConstants.SERIALIZATION_KEY, ChannelConstants.SERIALIZATION_DEFAULT);
     }
+    
+    public static int getConnectQueueLimit(URL url){
+        return url.getParameter(Constants.CONNECT_QUENE_LIMIT_KEY, Constants.CONNECT_QUENE_LIMIT_SIZE);
+        
+    }
+    
+    public static String getThreadName(URL url){
+        return url.getParameter(Constants.THREAD_NAME_KEY, Constants.THREAD_NAME_DEFAULT);
+    }
+    
+    
 }
