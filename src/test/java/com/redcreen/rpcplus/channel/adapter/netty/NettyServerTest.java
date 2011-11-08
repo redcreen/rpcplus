@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
+import com.redcreen.rpcplus.channel.Future;
 import com.redcreen.rpcplus.channel.Replier;
 import com.redcreen.rpcplus.channel.adapter.Client;
 import com.redcreen.rpcplus.channel.adapter.Server;
@@ -38,14 +39,24 @@ public class NettyServerTest {
 
     @Test
     public void testStartClient() throws ChannelException, InterruptedException {
-        URL url = URL.valueOf("hold://127.0.0.1:9911?codec=exchange&timeout=10000000");
+//        testStartServer();
+        
+        URL url = URL.valueOf("hold://127.0.0.1:9911?codec=exchange&timeout=500000");
         Client client = new NettyClient(url, new PortunificationHandler(url,
                 new CodecChannelHandler(url, new ExchangeChannelHandlerWrapper(
                         new MockClientChannelHandler()))));
         Person person = new Person("charles", 4);
+        Future fu = client.getChannel().request(person);
+//        Thread.sleep(100);
+        Future fu2 = client.getChannel().request(person);
+        Object obj = fu.get();
+        Object obj2 = fu2.get();
+        System.out.println("ret:"+obj);
+        System.out.println("ret2:"+obj2);
+        
+        Thread.sleep(100);
         client.getChannel().request(person);
-//        Object obj = client.getChannel().request(person).get();
-        Thread.sleep(Integer.MAX_VALUE);
+//        Thread.sleep(Integer.MAX_VALUE);
     }
 
     private static class MockServerChannelHandler extends AbstractChannelHandler implements Replier {

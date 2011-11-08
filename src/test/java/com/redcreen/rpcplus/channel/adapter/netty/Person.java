@@ -16,15 +16,18 @@
 package com.redcreen.rpcplus.channel.adapter.netty;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final AtomicInteger idincrement = new AtomicInteger(); 
+    private int     id;
     private String            name;
     private int               age;
 
     public Person(String name, int age) {
-        super();
+        this.id = idincrement.incrementAndGet();
         this.name = name;
         this.age = age;
     }
@@ -45,8 +48,12 @@ public class Person implements Serializable {
         this.age = age;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "Person [name=" + name + ", age=" + age + "]";
+        return "Person [id=" + id + ", name=" + name + ", age=" + age + "]";
     }
 }

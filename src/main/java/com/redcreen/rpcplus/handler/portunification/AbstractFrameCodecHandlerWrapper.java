@@ -97,9 +97,8 @@ public abstract class AbstractFrameCodecHandlerWrapper extends AbstractChannelHa
                             throw new IOException("Decode without read data.");
                         }
                         // null represent need more .do nothing waitfor next data package.
-                        if (msg != null) {
-                            handler.received(channel, msg);
-                        }
+                        handler.received(channel, msg);
+                        bis.mark(bis.position());
                         off = pos;
                     }
                 } while (bis.available() > 0);

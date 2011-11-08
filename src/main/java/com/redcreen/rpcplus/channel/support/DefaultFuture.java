@@ -24,6 +24,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.Future;
@@ -35,6 +38,8 @@ import com.redcreen.rpcplus.support.Constants;
  * 
  */
 public class DefaultFuture implements Future {
+    
+    private static final Logger logger = LoggerFactory.getLogger(DefaultFuture.class);
 
 
     private static final Map<Long, Channel>       CHANNELS   = new ConcurrentHashMap<Long, Channel>();
@@ -90,9 +95,9 @@ public class DefaultFuture implements Future {
                         break;
                     }
                 }
-            } catch (InterruptedException e) {
+            }catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            } finally {
+            }finally {
                 lock.unlock();
             }
             if (! isDone()) {
@@ -149,21 +154,21 @@ public class DefaultFuture implements Future {
             try {
                 callbackCopy.done(res.getResult());
             } catch (Exception e) {
-                //TODO logger.error("callback invoke error .reasult:" + res.getResult() + ",url:" + channel.getUrl(), e);
+                logger.error("callback invoke error .reasult:" + res.getResult() + ",url:" + channel.getUrl(), e);
             }
         } else if (res.getStatus() == Response.CLIENT_TIMEOUT || res.getStatus() == Response.SERVER_TIMEOUT) {
             try {
-//                TimeoutException te = new TimeoutException(res.getStatus() == Response.SERVER_TIMEOUT, channel, res.getErrorMessage());
-//                callbackCopy.caught(te);
+                TimeoutException te = new TimeoutException(res.getStatus() == Response.SERVER_TIMEOUT, channel, res.getErrorMessage());
+                callbackCopy.caught(te);
             } catch (Exception e) {
-                //TODO logger.error("callback invoke error ,url:" + channel.getUrl(), e);
+                logger.error("callback invoke error ,url:" + channel.getUrl(), e);
             }
         } else {
             try {
                 RuntimeException re = new RuntimeException(res.getErrorMessage());
                 callbackCopy.caught(re);
             } catch (Exception e) {
-                //TODO logger.error("callback invoke error ,url:" + channel.getUrl(), e);
+                logger.error("callback invoke error ,url:" + channel.getUrl(), e);
             }
         }
     }
@@ -177,7 +182,7 @@ public class DefaultFuture implements Future {
             return res.getResult();
         }
         if (res.getStatus() == Response.CLIENT_TIMEOUT || res.getStatus() == Response.SERVER_TIMEOUT) {
-//            throw new TimeoutException(res.getStatus() == Response.SERVER_TIMEOUT, channel, res.getErrorMessage());
+            throw new TimeoutException(res.getStatus() == Response.SERVER_TIMEOUT, channel, res.getErrorMessage());
         }
         throw new ChannelException(channel, res.getErrorMessage());
     }
@@ -227,11 +232,11 @@ public class DefaultFuture implements Future {
             if (future != null) {
                 future.doReceived(response);
             } else {
-                //TODO logger.warn("The timeout reponse finally returned at " 
-//                            + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date())) 
-//                            + ", response " + response 
-//                            + (channel == null ? "" : ", channel: " + channel.getLocalAddress() 
-//                                + " -> " + channel.getRemoteAddress()));
+                logger.warn("The timeout reponse finally returned at " 
+                            + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date())) 
+                            + ", response " + response 
+                            + (channel == null ? "" : ", channel: " + channel.getLocalAddress() 
+                                + " -> " + channel.getRemoteAddress()));
             }
         } finally {
             CHANNELS.remove(response.getId());
@@ -287,7 +292,7 @@ public class DefaultFuture implements Future {
                     }
                     Thread.sleep(30);
                 } catch (Throwable e) {
-//                    //TODO logger.error("Exception when scan the timeout invocation of remoting.", e);
+                    logger.error("Exception when scan the timeout invocation of remoting.", e);
                 }
             }
         }
