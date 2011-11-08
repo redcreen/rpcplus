@@ -19,7 +19,7 @@ import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.Client;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.URL;
-import com.redcreen.rpcplus.util.URLUtils;
+import com.redcreen.rpcplus.support.URLUtils;
 
 /**
  */

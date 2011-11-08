@@ -40,7 +40,8 @@ public interface Channel extends Attributeable {
      */
     void send(Object message, boolean sent) throws ChannelException;
     
-    Future request(Object request) throws ChannelException;
+    
+    ChannelFuture request(Object request) throws ChannelException;
 
     /**
      * Graceful close the channel.
@@ -73,7 +74,7 @@ public interface Channel extends Attributeable {
      * 
      * @return channel handler
      */
-    ChannelHandler getChannelHandler();
+    ChannelHandler getHandler();
 
     /**
      * get local address.

@@ -9,12 +9,12 @@ package com.redcreen.rpcplus.channel.support;
 
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
-import com.redcreen.rpcplus.channel.Future;
+import com.redcreen.rpcplus.channel.ChannelFuture;
 import com.redcreen.rpcplus.support.Constants;
-import com.redcreen.rpcplus.util.URLUtils;
+import com.redcreen.rpcplus.support.URLUtils;
 
 public class ChannelUtil {
-    public static Future request(Channel channel, Object message) throws ChannelException {
+    public static ChannelFuture request(Channel channel, Object message) throws ChannelException {
         // create request.
         Request req = new Request();
         req.setVersion(Constants.version);

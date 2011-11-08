@@ -17,5 +17,5 @@ package com.redcreen.rpcplus.channel;
 
 public interface ChannelHandlerWrapper {
     
-    ChannelHandler getChannelHandler();
+    ChannelHandler getHandler();
 }

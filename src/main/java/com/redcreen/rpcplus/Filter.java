@@ -15,9 +15,9 @@
  */
 package com.redcreen.rpcplus;
 
-import com.redcreen.rpcplus.annotations.SPI;
-import com.redcreen.rpcplus.annotations.Singleton;
-import com.redcreen.rpcplus.annotations.ThreadSafe;
+import com.redcreen.rpcplus.support.SPI;
+import com.redcreen.rpcplus.support.Singleton;
+import com.redcreen.rpcplus.support.ThreadSafe;
 
 
 /**

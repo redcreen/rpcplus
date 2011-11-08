@@ -549,4 +549,17 @@ public class ExtensionLoader<T> {
         return this.getClass().getName() + "[" + type.getName() + "]";
     }
     
+    private class Reference<T> {
+        
+        private T value;
+        
+        public void set(T value) {
+            this.value = value;
+        }
+        
+        public T get() {
+            return value;
+        }
+
+    }
 }

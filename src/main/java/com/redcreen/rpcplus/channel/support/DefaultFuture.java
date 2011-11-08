@@ -29,15 +29,14 @@ import org.slf4j.LoggerFactory;
 
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
-import com.redcreen.rpcplus.channel.Future;
-import com.redcreen.rpcplus.channel.FutureCallback;
+import com.redcreen.rpcplus.channel.ChannelFuture;
 import com.redcreen.rpcplus.support.Constants;
 
 /**
  * DefaultFuture.
  * 
  */
-public class DefaultFuture implements Future {
+public class DefaultFuture implements ChannelFuture {
     
     private static final Logger logger = LoggerFactory.getLogger(DefaultFuture.class);
 
@@ -65,7 +64,7 @@ public class DefaultFuture implements Future {
     
     private volatile Response                     response;
 
-    private volatile FutureCallback             callback;
+    private volatile Callback             callback;
 
     public DefaultFuture(Channel channel, Request request, int timeout){
         this.channel = channel;
@@ -119,7 +118,7 @@ public class DefaultFuture implements Future {
         return response != null;
     }
 
-    public void setCallback(FutureCallback callback) {
+    public void setCallback(Callback callback) {
         if (isDone()) {
             invokeCallback(callback);
         } else {
@@ -139,8 +138,8 @@ public class DefaultFuture implements Future {
             }
         }
     }
-    private void invokeCallback(FutureCallback c){
-        FutureCallback callbackCopy = c;
+    private void invokeCallback(Callback c){
+        Callback callbackCopy = c;
         if (callbackCopy == null){
             throw new NullPointerException("callback cannot be null.");
         }

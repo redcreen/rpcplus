@@ -6,13 +6,13 @@ import java.io.InputStream;
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.handler.AbstractChannelHandlerWrapper;
+import com.redcreen.rpcplus.handler.AbstractHandlerWrapper;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.URL;
 import com.redcreen.rpcplus.util.io.Bytes;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 
-public abstract class AbstractFrameCodecHandlerWrapper extends AbstractChannelHandlerWrapper {
+public abstract class AbstractFrameCodecHandlerWrapper extends AbstractHandlerWrapper {
     
     private final int            bufferSize;
     

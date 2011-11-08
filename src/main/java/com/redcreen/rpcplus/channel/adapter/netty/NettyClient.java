@@ -24,12 +24,12 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import com.redcreen.rpcplus.channel.ChannelException;
 import com.redcreen.rpcplus.channel.adapter.AbstractClient;
 import com.redcreen.rpcplus.channel.support.Response;
-import com.redcreen.rpcplus.codec.Codec;
+import com.redcreen.rpcplus.handler.codec.Codec;
 import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.Extension;
 import com.redcreen.rpcplus.support.ExtensionLoader;
+import com.redcreen.rpcplus.support.URLUtils;
 import com.redcreen.rpcplus.util.ExecutorUtils;
-import com.redcreen.rpcplus.util.URLUtils;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayInputStream;
 import com.redcreen.rpcplus.util.io.UnsafeByteArrayOutputStream;
 

@@ -15,9 +15,9 @@
  */
 package com.redcreen.rpcplus.channel;
 
-import com.redcreen.rpcplus.annotations.API;
-import com.redcreen.rpcplus.annotations.Prototype;
-import com.redcreen.rpcplus.annotations.ThreadSafe;
+import com.redcreen.rpcplus.support.API;
+import com.redcreen.rpcplus.support.Prototype;
+import com.redcreen.rpcplus.support.ThreadSafe;
 
 /**
  * ChannelHandler. 

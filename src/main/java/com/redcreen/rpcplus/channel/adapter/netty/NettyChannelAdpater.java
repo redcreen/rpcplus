@@ -3,15 +3,14 @@ package com.redcreen.rpcplus.channel.adapter.netty;
 import java.net.InetSocketAddress;
 
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
 
 import com.redcreen.rpcplus.channel.ChannelException;
+import com.redcreen.rpcplus.channel.ChannelFuture;
 import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.Future;
 import com.redcreen.rpcplus.channel.support.Attributes;
 import com.redcreen.rpcplus.channel.support.ChannelUtil;
 import com.redcreen.rpcplus.support.URL;
-import com.redcreen.rpcplus.util.URLUtils;
+import com.redcreen.rpcplus.support.URLUtils;
 
 public class NettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel {
     private final URL            url;
@@ -50,7 +49,7 @@ public class NettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel
     public void send(Object message, boolean sent) throws ChannelException {
         boolean success = true;
         try {
-            ChannelFuture future = nettyChannel.write(message);
+            org.jboss.netty.channel.ChannelFuture future = nettyChannel.write(message);
             if (sent) {
                 success = future.await(URLUtils.getTimeout(url));
             }
@@ -64,7 +63,7 @@ public class NettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel
     }
     
     @Override
-    public Future request(Object request) throws ChannelException {
+    public ChannelFuture request(Object request) throws ChannelException {
         return ChannelUtil.request(this, request);
     }
 
@@ -94,7 +93,7 @@ public class NettyChannelAdpater implements com.redcreen.rpcplus.channel.Channel
         return url;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public ChannelHandler getHandler() {
         return handler;
     }
 

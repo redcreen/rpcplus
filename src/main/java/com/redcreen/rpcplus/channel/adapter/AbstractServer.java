@@ -18,7 +18,7 @@ import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.channel.Server;
 import com.redcreen.rpcplus.support.Constants;
 import com.redcreen.rpcplus.support.URL;
-import com.redcreen.rpcplus.util.ExecutorUtil;
+import com.redcreen.rpcplus.util.ExecutorUtils;
 
 public abstract class AbstractServer implements Server {
     private InetSocketAddress localAddress;
@@ -58,7 +58,7 @@ public abstract class AbstractServer implements Server {
     protected abstract void doClose() throws Throwable;
 
     public void close(int timeout) throws ChannelException {
-        ExecutorUtil.shutdownNow(executor, timeout);
+        ExecutorUtils.shutdownNow(executor, timeout);
         try {
             doClose();
         } catch (Throwable e) {
