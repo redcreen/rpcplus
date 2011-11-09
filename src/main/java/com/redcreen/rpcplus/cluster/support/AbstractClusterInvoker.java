@@ -7,12 +7,12 @@
  */
 package com.redcreen.rpcplus.cluster.support;
 
-import com.redcreen.rpcplus.Invocation;
-import com.redcreen.rpcplus.InvokeException;
-import com.redcreen.rpcplus.Invoker;
-import com.redcreen.rpcplus.Result;
 import com.redcreen.rpcplus.cluster.ClusterInvoker;
 import com.redcreen.rpcplus.cluster.Directory;
+import com.redcreen.rpcplus.service.Invocation;
+import com.redcreen.rpcplus.service.InvokeException;
+import com.redcreen.rpcplus.service.InvokeResult;
+import com.redcreen.rpcplus.service.Invoker;
 import com.redcreen.rpcplus.support.URL;
 
 public class AbstractClusterInvoker<T> implements ClusterInvoker<T> {
@@ -40,7 +40,7 @@ public class AbstractClusterInvoker<T> implements ClusterInvoker<T> {
             return directory.isAvailable();
         }
     }
-    public Result invoke(Invocation invocation) throws InvokeException {
+    public InvokeResult invoke(Invocation invocation) throws InvokeException {
         Invoker<T> invoker = select();
         //TODO
         //directory get list

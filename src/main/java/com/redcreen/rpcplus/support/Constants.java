@@ -20,6 +20,30 @@ public class Constants {
     public final static String THREAD_NAME_KEY           = SYSTEM_PREFIX_KEY + "thread.name";
     public final static String THREAD_NAME_DEFAULT       = "RPCPLUS";
 
+    public static class ServiceConstants {
+        public final static String PROXY_KEY           = SYSTEM_PREFIX_KEY + "proxy";
+        public final static String PROXY_DEFAULT       = "jdk";
+        
+        public final static String CONTEXT_KEY           = SYSTEM_PREFIX_KEY + "context";
+        public final static String CONTEXT_DEFAULT       = "rpcplus";
+        
+        public final static String VERSION_KEY     = "version";
+        public final static String GROUP_KEY       = "group";
+        public final static String INTERFACE_KEY   = "interface";
+        public final static String PATH_KEY        = "path";
+        
+        public final static String $INVOKE        = "$invoke";
+        
+        public final static String ASYNC_KEY        = "async";
+        
+        public final static String RETURN_KEY        = "return";
+        
+        
+        
+        
+
+    }
+    
     public static class ChannelConstants {
 
         public final static String  SERVER_THREAD_POOL_NAME = "server.handler.pool";
@@ -36,15 +60,22 @@ public class Constants {
         public final static int     PAYLOAD_DEFAULT         = 1024 * 1024;
 
         public final static String  CODEC_KEY               = SYSTEM_PREFIX_KEY + "codec";
-        public final static String  CODEC_DEFAULT           = "telnet";
+        public final static String  CODEC_DEFAULT           = "exchange";
 
         public final static String  SERIALIZATION_KEY       = SYSTEM_PREFIX_KEY + "serialization";
         public final static String  SERIALIZATION_DEFAULT   = "java";
 
         public final static String  CHECK_KEY               = SYSTEM_PREFIX_KEY + "check";
         public final static boolean CHECK_DEFAULT           = true;
+        
+        public final static String  CLIENT_KEY               = SYSTEM_PREFIX_KEY + "client";
+        public final static String  CLIENT_DEFAULT           = "nettyclient";
+        
+        public final static String  SERVER_KEY               = SYSTEM_PREFIX_KEY + "server";
+        public final static String  SERVER_DEFAULT           = "nettyserver";
 
         public final static String  CHARSET_KEY             = SYSTEM_PREFIX_KEY + "charset";
 
     }
 }
+

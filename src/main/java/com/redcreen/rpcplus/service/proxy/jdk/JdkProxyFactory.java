@@ -1,12 +1,12 @@
-package com.redcreen.rpcplus.proxy.jdk;
+package com.redcreen.rpcplus.service.proxy.jdk;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import com.redcreen.rpcplus.Invoker;
-import com.redcreen.rpcplus.proxy.InvokerHandler;
-import com.redcreen.rpcplus.proxy.InvokerWrapper;
-import com.redcreen.rpcplus.proxy.ProxyFactory;
+import com.redcreen.rpcplus.service.Invoker;
+import com.redcreen.rpcplus.service.proxy.InvokerHandler;
+import com.redcreen.rpcplus.service.proxy.InvokerWrapper;
+import com.redcreen.rpcplus.service.proxy.ProxyFactory;
 import com.redcreen.rpcplus.support.Extension;
 import com.redcreen.rpcplus.support.URL;
 

@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus.proxy;
-
-import com.redcreen.rpcplus.InvokeException;
-import com.redcreen.rpcplus.Invoker;
-import com.redcreen.rpcplus.support.URL;
+package com.redcreen.rpcplus.service.internal;
 
 /**
- * ProxyFactory. (SPI, Singleton, ThreadSafe)
+ * Echo service.
  * 
  */
-public interface ProxyFactory {
+public interface EchoService {
 
     /**
-     * create proxy.
+     * echo test.
      * 
-     * @param invoker
-     * @param types
-     * @return proxy
+     * @param message message.
+     * @return message.
      */
-    <T> T getProxy(Invoker<T> invoker, Class<?>... types) throws InvokeException;
-
-    /**
-     * create invoker.
-     * 
-     * @param <T>
-     * @param proxy
-     * @param type
-     * @param url
-     * @return invoker
-     */
-    <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws InvokeException;
+    Object $echo(Object message);
 
 }

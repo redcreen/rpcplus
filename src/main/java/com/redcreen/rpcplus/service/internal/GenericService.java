@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus;
-
-import com.redcreen.rpcplus.support.SPI;
-import com.redcreen.rpcplus.support.Singleton;
-import com.redcreen.rpcplus.support.ThreadSafe;
-
+package com.redcreen.rpcplus.service.internal;
 
 /**
- * Filter.
+ * 通用服务接口
  * 
  */
-@SPI
-@Singleton
-@ThreadSafe
-public interface Filter {
+public interface GenericService {
 
-	/**
-	 * do invoke filter.
-	 * 
-	 * <code>
-     *     return invoker.invoke(invocation);
-     * </code>
+    /**
+     * 泛化调用
      * 
-	 * @param invoker service
-	 * @param invocation invocation.
-	 * @return invoke result.
-	 * @throws RpcException
-	 */
-	Result invoke(Invoker<?> invoker, Invocation invocation) throws InvokeException;
+     * @param method 方法名，如：findPerson，如果有重载方法，需带上参数列表，如：findPerson(java.lang.String)
+     * @param parameterTypes 参数类型
+     * @param args 参数列表
+     * @return 返回值
+     * @throws Throwable 方法抛出的异常
+     */
+    Object $invoke(String method, String[] parameterTypes, Object[] args) throws GenericException;
 
 }

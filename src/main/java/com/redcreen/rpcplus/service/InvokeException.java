@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus;
+package com.redcreen.rpcplus.service;
 
 import com.redcreen.rpcplus.support.API;
 import com.redcreen.rpcplus.support.Prototype;

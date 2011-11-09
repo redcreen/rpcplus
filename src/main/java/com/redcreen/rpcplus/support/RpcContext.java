@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import com.redcreen.rpcplus.Invocation;
-import com.redcreen.rpcplus.Invoker;
+import com.redcreen.rpcplus.service.Invocation;
+import com.redcreen.rpcplus.service.Invoker;
 import com.redcreen.rpcplus.util.NetUtils;
 
 /**

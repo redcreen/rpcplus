@@ -13,24 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus.protocol;
+package com.redcreen.rpcplus.service.proxy;
 
-import com.redcreen.rpcplus.InvokeException;
-import com.redcreen.rpcplus.Invoker;
+import com.redcreen.rpcplus.service.InvokeException;
+import com.redcreen.rpcplus.service.Invoker;
 import com.redcreen.rpcplus.support.URL;
 
 /**
- * Protocol. (SPI, Singleton, ThreadSafe)
+ * ProxyFactory. (SPI, Singleton, ThreadSafe)
+ * 
  */
-public interface Protocol {
+public interface ProxyFactory {
 
-    <T> void export(Invoker<T> invoker) throws InvokeException;
+    /**
+     * create proxy.
+     * 
+     * @param invoker
+     * @param types
+     * @return proxy
+     */
+    <T> T getProxy(Invoker<T> invoker, Class<?>... types) throws InvokeException;
 
-    <T> void unexport(Invoker<T> invoker) throws InvokeException;
+    /**
+     * create invoker.
+     * 
+     * @param <T>
+     * @param proxy
+     * @param type
+     * @param url
+     * @return invoker
+     */
+    <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws InvokeException;
 
-    <T> Invoker<T> refer(Class<T> type, URL url) throws InvokeException;
-
-    <T> void unrefer(Class<T> type, URL url) throws InvokeException;
-
-    void destroy();
 }

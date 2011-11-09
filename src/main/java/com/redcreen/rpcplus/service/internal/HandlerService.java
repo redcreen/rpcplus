@@ -5,7 +5,7 @@
  * use it only in accordance with the terms of the license agreement you entered
  * into with Alibaba.com.
  */
-package com.redcreen.rpcplus.service;
+package com.redcreen.rpcplus.service.internal;
 
 /**
  * 

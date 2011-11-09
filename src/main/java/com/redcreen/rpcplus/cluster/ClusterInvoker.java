@@ -7,7 +7,7 @@
  */
 package com.redcreen.rpcplus.cluster;
 
-import com.redcreen.rpcplus.Invoker;
+import com.redcreen.rpcplus.service.Invoker;
 
 /**
  */

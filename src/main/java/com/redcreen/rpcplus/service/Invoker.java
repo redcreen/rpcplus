@@ -13,57 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus;
+package com.redcreen.rpcplus.service;
 
 import com.redcreen.rpcplus.support.API;
 import com.redcreen.rpcplus.support.Prototype;
 import com.redcreen.rpcplus.support.SPI;
 import com.redcreen.rpcplus.support.ThreadSafe;
+import com.redcreen.rpcplus.support.URL;
+
 
 /**
- * RPC invoke result.
- * 
- * @serial Don't change the class name.
+ * Invoker. 
  */
 @SPI
 @API
 @Prototype
 @ThreadSafe
-public interface Result {
+public interface Invoker<T> {
 
     /**
-     * Has exception.
+     * get service interface.
      * 
-     * @return has exception.
+     * @return service interface.
      */
-    boolean hasException();
-
-	/**
-	 * Get invoke result.
-	 * 
-	 * @return result if has exception throw it.
-	 * @throws Throwable.
-	 */
-	Object getResult();
-
-	/**
-	 * Get exception.
-	 * 
-	 * @return exception if no exception return null.
-	 */
-	Throwable getException();
+    Class<T> getInterface();
 
     /**
-     * Recreate.
+     * get service url.
      * 
-     * <code>
-     * if (hasException()) {
-     *     throw getException();
-     * } else {
-     *     return getResult();
-     * }
-     * </code>
+     * @return service url.
      */
-    Object recreate() throws Throwable;
+    URL getUrl();
+
+    /**
+     * is available.
+     * 
+     * @return available.
+     */
+    boolean isAvailable();
+
+    /**
+     * invoke.
+     * 
+     * @param invocation
+     * @return result
+     * @throws InvokeException
+     */
+    InvokeResult invoke(Invocation invocation) throws InvokeException;
+
+    /**
+     * destroy.
+     */
+    void destroy();
 
 }

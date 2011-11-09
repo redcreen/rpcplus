@@ -1,1 +1,37 @@
 rpc project
+
+
+protocol
+invokercontext？
+servicecontext
+
+service
+reflect?
+
+
+protocol 
+	buildhandlerpipeline
+	buildwrapperPipeLine  wrap-wrap缺点：链条无法变更
+	
+	buildfilterchain
+	
+
+	
+采用PipeLine的方式
+定义up down接口 不用太抽象，down接口中定义write方法即可。做encode
+
+pipeline builder 
+
+pipeline attach netty pipeline or mina filter
+
+临时数据放在channel上
+InputStream = channel.getRemaing
+
+InvokerFilter
+FilterChain 可动态管理filter
+filter与channel绑定 不做固定filter 不同的channelfilter可以不同
+
+
+ 
+	
+	

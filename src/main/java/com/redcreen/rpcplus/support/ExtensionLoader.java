@@ -549,6 +549,7 @@ public class ExtensionLoader<T> {
         return this.getClass().getName() + "[" + type.getName() + "]";
     }
     
+    @SuppressWarnings("hiding")
     private class Reference<T> {
         
         private T value;

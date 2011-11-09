@@ -1,10 +1,10 @@
-package com.redcreen.rpcplus.proxy;
+package com.redcreen.rpcplus.service.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import com.redcreen.rpcplus.Invoker;
-import com.redcreen.rpcplus.support.RpcInvocation;
+import com.redcreen.rpcplus.service.Invocation;
+import com.redcreen.rpcplus.service.Invoker;
 
 public class InvokerHandler implements InvocationHandler {
 
@@ -29,7 +29,7 @@ public class InvokerHandler implements InvocationHandler {
         if ("equals".equals(methodName) && parameterTypes.length == 1) {
             return invoker.equals(args[0]);
         }
-        return invoker.invoke(new RpcInvocation(method, args)).recreate();
+        return invoker.invoke(new Invocation(method, args)).recreate();
     }
 
 }

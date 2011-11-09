@@ -1,12 +1,11 @@
-package com.redcreen.rpcplus.proxy;
+package com.redcreen.rpcplus.service.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 
-import com.redcreen.rpcplus.Invocation;
-import com.redcreen.rpcplus.InvokeException;
-import com.redcreen.rpcplus.Invoker;
-import com.redcreen.rpcplus.Result;
-import com.redcreen.rpcplus.support.RpcResult;
+import com.redcreen.rpcplus.service.Invocation;
+import com.redcreen.rpcplus.service.InvokeException;
+import com.redcreen.rpcplus.service.InvokeResult;
+import com.redcreen.rpcplus.service.Invoker;
 import com.redcreen.rpcplus.support.URL;
 
 public abstract class InvokerWrapper<T> implements Invoker<T> {
@@ -47,11 +46,11 @@ public abstract class InvokerWrapper<T> implements Invoker<T> {
     public void destroy() {
     }
 
-    public Result invoke(Invocation invocation) throws InvokeException {
+    public InvokeResult invoke(Invocation invocation) throws InvokeException {
         try {
-            return new RpcResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
+            return new InvokeResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
         } catch (InvocationTargetException e) {
-            return new RpcResult(e.getTargetException());
+            return new InvokeResult(e.getTargetException());
         } catch (Throwable e) {
             throw new InvokeException(e.getMessage(), e);
         }

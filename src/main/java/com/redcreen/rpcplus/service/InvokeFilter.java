@@ -13,49 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.redcreen.rpcplus;
+package com.redcreen.rpcplus.service;
 
-import java.util.Map;
-
-import com.redcreen.rpcplus.support.API;
-import com.redcreen.rpcplus.support.Prototype;
+import com.redcreen.rpcplus.support.SPI;
+import com.redcreen.rpcplus.support.Singleton;
 import com.redcreen.rpcplus.support.ThreadSafe;
 
+
 /**
- * Rpc invocation.
+ * Filter.
+ * 
  */
-
-@API
-@Prototype
+@SPI
+@Singleton
 @ThreadSafe
-public interface Invocation {
+public interface InvokeFilter {
 
-    /**
-     * get method name.
+	/**
+	 * do invoke filter.
+	 * 
+	 * <code>
+     *     return invoker.invoke(invocation);
+     * </code>
      * 
-     * @return method name.
-     */
-    String getMethodName();
-
-    /**
-     * get parameter types.
-     * 
-     * @return parameter types.
-     */
-    Class<?>[] getParameterTypes();
-
-    /**
-     * get arguments.
-     * 
-     * @return arguments.
-     */
-    Object[] getArguments();
-
-    /**
-     * get attachments.
-     * 
-     * @return attachments.
-     */
-    Map<String, String> getAttachments();
+	 * @param invoker service
+	 * @param invocation invocation.
+	 * @return invoke result.
+	 * @throws RpcException
+	 */
+	InvokeResult invoke(Invoker<?> invoker, Invocation invocation) throws InvokeException;
 
 }
