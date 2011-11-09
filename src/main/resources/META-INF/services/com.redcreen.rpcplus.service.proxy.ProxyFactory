@@ -1,1 +1,2 @@
 com.redcreen.rpcplus.service.proxy.jdk.JdkProxyFactory
+com.redcreen.rpcplus.service.proxy.javassist.JavassistProxyFactory

@@ -35,23 +35,27 @@ public class ServiceTest {
     @Before
     public void setUp() throws Exception {
     }
-
+    
+//    @Test
     public void exportHelloService(){
         ServiceUtils.export(new HelloServiceImpl(), HelloService.class, url);
+//        try {
+//            Thread.sleep(Integer.MAX_VALUE);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
-    
     public void callHelloService(){
         HelloService service = ServiceUtils.refer(HelloService.class, url);
         String ret = service.say("hi");
         Assert.assertEquals("hi", ret);
     }
     
-//    @Test
+    @Test
     public void testCall(){
         exportHelloService();
         callHelloService();
     }
-    
     
     public static interface HelloService{
         public String say(String words);

@@ -38,8 +38,8 @@ public class ChannelBasedServiceContext implements ServiceContext {
         public Object reply(Channel channel, Object message) {
             Invocation inv = (Invocation) message;
             URL url = channel.getUrl();
-            //TODO oneport 
-            String serviceKey = url.getAddress();
+            //TODO SERVICE KEY GET FORM ATTATCH
+            String serviceKey = URLUtils.getServiceKey(url);
             return services.get(serviceKey).invoke(inv);
         }
     }

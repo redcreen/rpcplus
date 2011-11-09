@@ -14,7 +14,7 @@ public class URLUtils {
     }
 
     public static int getIoThreads(URL url) {
-        return url.getParameter(Constants.TIMEOUT_KEY, ChannelConstants.IO_THREADS_DEFAULT);
+        return url.getParameter(ChannelConstants.IO_THREADS_KEY, ChannelConstants.IO_THREADS_DEFAULT);
 
     }
 

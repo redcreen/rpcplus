@@ -22,7 +22,7 @@ public class Constants {
 
     public static class ServiceConstants {
         public final static String PROXY_KEY           = SYSTEM_PREFIX_KEY + "proxy";
-        public final static String PROXY_DEFAULT       = "jdk";
+        public final static String PROXY_DEFAULT       = "javassist";
         
         public final static String CONTEXT_KEY           = SYSTEM_PREFIX_KEY + "context";
         public final static String CONTEXT_DEFAULT       = "rpcplus";
