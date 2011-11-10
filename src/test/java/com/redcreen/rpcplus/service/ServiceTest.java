@@ -36,15 +36,16 @@ public class ServiceTest {
     public void setUp() throws Exception {
     }
     
-//    @Test
+    @Test
     public void exportHelloService(){
         ServiceUtils.export(new HelloServiceImpl(), HelloService.class, url);
-//        try {
-//            Thread.sleep(Integer.MAX_VALUE);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(Integer.MAX_VALUE);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+    @Test
     public void callHelloService(){
         HelloService service = ServiceUtils.refer(HelloService.class, url);
         String ret = service.say("hi");
@@ -53,8 +54,10 @@ public class ServiceTest {
     
     @Test
     public void testCall(){
-        exportHelloService();
-        callHelloService();
+        ServiceUtils.export(new HelloServiceImpl(), HelloService.class, url);
+        HelloService service = ServiceUtils.refer(HelloService.class, url);
+        String ret = service.say("hi");
+        Assert.assertEquals("hi", ret);
     }
     
     public static interface HelloService{

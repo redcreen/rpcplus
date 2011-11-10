@@ -17,7 +17,7 @@ public class ChannelUtil {
     public static ChannelFuture request(Channel channel, Object message) throws ChannelException {
         // create request.
         Request req = new Request();
-        req.setVersion(Constants.version);
+        req.setVersion(Constants.VERSION_VALUE);
         req.setTwoWay(true);
         req.setData(message);
         DefaultFuture future = new DefaultFuture(channel, req, URLUtils.getTimeout(channel.getUrl()));

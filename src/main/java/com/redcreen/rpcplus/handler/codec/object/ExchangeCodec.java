@@ -29,6 +29,7 @@ import com.redcreen.rpcplus.handler.codec.AbstractCodec;
 import com.redcreen.rpcplus.handler.codec.serialize.ObjectInput;
 import com.redcreen.rpcplus.handler.codec.serialize.ObjectOutput;
 import com.redcreen.rpcplus.handler.codec.serialize.Serialization;
+import com.redcreen.rpcplus.support.Constants.ChannelConstants;
 import com.redcreen.rpcplus.support.Extension;
 import com.redcreen.rpcplus.util.StringUtils;
 import com.redcreen.rpcplus.util.io.Bytes;
@@ -166,8 +167,14 @@ public class ExchangeCodec extends AbstractCodec {
     }
 
     private Object decodeData(Channel channel, ObjectInput in) throws IOException {
+        //TODO INVOCATIN OR ??
+        Class<?> type = (Class<?>)channel.getAttribute(ChannelConstants.ATTRIBUTE_TYPE_KEY);
         try {
-            return in.readObject();
+            if (type == null){
+                return in.readObject();
+            } else {
+                return in.readObject(type);
+            }
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read object failed.", e));
         }

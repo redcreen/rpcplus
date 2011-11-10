@@ -2,7 +2,8 @@ package com.redcreen.rpcplus.support;
 
 public class Constants {
 
-    public final static String version                   = "0.0.1";
+    public final static String VERSION_KEY               = "RPC";
+    public final static String VERSION_VALUE             = "0.0.1";
     public final static String SYSTEM_PREFIX_KEY         = "";                                 //TODO
     public final static String TIMEOUT_KEY               = SYSTEM_PREFIX_KEY + "timeout";
     public final static int    TIMEOUT_DEFAULT           = 5000;
@@ -38,10 +39,6 @@ public class Constants {
         
         public final static String RETURN_KEY        = "return";
         
-        
-        
-        
-
     }
     
     public static class ChannelConstants {
@@ -74,7 +71,11 @@ public class Constants {
         public final static String  SERVER_KEY               = SYSTEM_PREFIX_KEY + "server";
         public final static String  SERVER_DEFAULT           = "nettyserver";
 
-        public final static String  CHARSET_KEY             = SYSTEM_PREFIX_KEY + "charset";
+        public final static String  CHARSET_KEY              = SYSTEM_PREFIX_KEY + "charset";
+        
+        //CHANNEL ATTRIBUTE
+        public final static String  ATTRIBUTE_ISINVOCATION_KEY       = SYSTEM_PREFIX_KEY + "isinvocation";
+        public final static String  ATTRIBUTE_TYPE_KEY       = SYSTEM_PREFIX_KEY + "type";
 
     }
 }
