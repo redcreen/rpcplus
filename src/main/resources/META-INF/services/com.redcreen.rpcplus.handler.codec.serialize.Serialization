@@ -1,2 +1,1 @@
-com.redcreen.rpcplus.service.invocationSerialize.InvocatinoSerializationWrapper
 com.redcreen.rpcplus.handler.codec.serialize.java.JavaSerialization

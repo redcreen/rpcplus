@@ -21,12 +21,15 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.redcreen.rpcplus.ServiceUtils;
 import com.redcreen.rpcplus.support.URL;
 
 public class ServiceTest {
     URL url = URL.valueOf("rpc://127.0.0.1:9911?interface="+HelloService.class.getName()+"&timeout=100000");
+    private static Logger logger = LoggerFactory.getLogger(ServiceTest.class);
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -36,7 +39,7 @@ public class ServiceTest {
     public void setUp() throws Exception {
     }
     
-    @Test
+//    @Test
     public void exportHelloService(){
         ServiceUtils.export(new HelloServiceImpl(), HelloService.class, url);
         try {
@@ -45,7 +48,7 @@ public class ServiceTest {
             e.printStackTrace();
         }
     }
-    @Test
+//    @Test
     public void callHelloService(){
         HelloService service = ServiceUtils.refer(HelloService.class, url);
         String ret = service.say("hi");
@@ -65,9 +68,9 @@ public class ServiceTest {
     }
     
     public static class HelloServiceImpl implements HelloService{
-
         @Override
         public String say(String words) {
+            logger.info(words);
             return words;
         }
     }

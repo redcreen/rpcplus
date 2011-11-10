@@ -1,18 +1,12 @@
 package com.redcreen.rpcplus.channel;
 
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.redcreen.rpcplus.channel.Channel;
-import com.redcreen.rpcplus.channel.ChannelException;
-import com.redcreen.rpcplus.channel.ChannelHandler;
-import com.redcreen.rpcplus.channel.Client;
-import com.redcreen.rpcplus.channel.ChannelFuture;
-import com.redcreen.rpcplus.channel.Peer;
-import com.redcreen.rpcplus.channel.Replier;
-import com.redcreen.rpcplus.channel.Server;
 import com.redcreen.rpcplus.handler.AbstractHandler;
 import com.redcreen.rpcplus.handler.codec.CodecHandlerWrapper;
 import com.redcreen.rpcplus.handler.exchange.ExchangeHandlerWrapper;
@@ -74,7 +68,8 @@ public class ServerTest {
         System.out.println("ret3:"+ fu3.get());
 //        Thread.sleep(Integer.MAX_VALUE);
     }
-
+    
+    
     private static class MockSererHandler extends AbstractHandler implements Replier {
         @Override
         public void sent(Channel channel, Object message) throws ChannelException {

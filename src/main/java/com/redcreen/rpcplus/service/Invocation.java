@@ -1,12 +1,15 @@
 package com.redcreen.rpcplus.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class Invocation{
+public class Invocation implements Serializable {
+    
+    private static final long serialVersionUID = 8372087762057233386L;
 
     private String              methodName;
 
