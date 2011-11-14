@@ -1,2 +1,2 @@
-com.redcreen.rpcplus.handler.codec.string.TelnetCodec
-com.redcreen.rpcplus.handler.codec.object.ExchangeCodec
+com.redcreen.rpcplus.handler.codec.frame.TelnetCodec
+com.redcreen.rpcplus.handler.codec.frame.ExchangeCodec

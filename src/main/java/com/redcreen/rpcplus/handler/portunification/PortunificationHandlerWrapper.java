@@ -6,7 +6,7 @@ import java.io.InputStream;
 import com.redcreen.rpcplus.channel.Channel;
 import com.redcreen.rpcplus.channel.ChannelHandler;
 import com.redcreen.rpcplus.handler.codec.Codec;
-import com.redcreen.rpcplus.handler.codec.object.ExchangeCodec;
+import com.redcreen.rpcplus.handler.codec.frame.ExchangeCodec;
 import com.redcreen.rpcplus.support.ExtensionLoader;
 import com.redcreen.rpcplus.support.URL;
 
