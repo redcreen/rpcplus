@@ -60,8 +60,8 @@ public class NettyClient extends AbstractClient {
 
             public ChannelPipeline getPipeline() {
                 ChannelPipeline pipeline = Channels.pipeline();
-                pipeline.addLast("handler", nettyHandler);
-                pipeline.addLast("encoder", encoder);
+                pipeline.addLast("Downstream_encoder", encoder);
+                pipeline.addLast("UpstreamHandler", nettyHandler);
                 return pipeline;
             }
         });
@@ -180,7 +180,7 @@ public class NettyClient extends AbstractClient {
             if (readable <= 0) {
                 return;
             }
-            //TODO must copy?
+            //wrap ChannelBuffer to UnsafeByteArrayInputStream
             UnsafeByteArrayInputStream bis = new UnsafeByteArrayInputStream(input.array());
             handler.received(channel, bis);
         }
