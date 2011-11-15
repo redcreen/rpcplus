@@ -143,7 +143,7 @@ public class NettyClient extends AbstractClient {
         Codec codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(URLUtils.getCodec(url));
         @Override
         protected Object encode(ChannelHandlerContext ctx, Channel ch, Object msg) throws Exception {
-            UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream(1024); // 不需要关闭
+            UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream(1024);
             if(!(msg instanceof Response)){
                 codec.encode(channel, os, msg);
             }else {
